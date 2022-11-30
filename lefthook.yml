@@ -1,0 +1,16 @@
+colors: true
+
+pre-commit:
+  parallel: true
+  commands:
+    integrity:
+      run: yarn check --integrity
+    eslint:
+      glob: "*.{ts,tsx}"
+      run: yarn eslint --ext .ts,.tsx {staged_files}
+    type-check:
+      glob: "*.{ts,tsx}"
+      run: yarn tsc --noEmit
+    circular:
+      glob: "*.{ts,tsx}"
+      run: yarn madge -c {staged_files}

@@ -1,0 +1,33 @@
+{
+    "root": true,
+    "extends": ["@react-native-community", "prettier"],
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "prettier",
+      "@typescript-eslint",
+      "import"
+    ],
+    "rules": {
+      "react/jsx-curly-brace-presence": ["error", { "props": "never", "children": "never" }],
+      "arrow-body-style": ["error", "as-needed"],
+      "no-console": "error",
+      "react/jsx-key": "error",
+      "react-hooks/exhaustive-deps": "off",
+      "import/order": [
+        "error",
+        {
+          "groups": ["external", "internal", "builtin", "unknown", "parent", "index", "sibling"],
+          "newlines-between": "always",
+          "alphabetize": {
+            "order": "asc",
+            "caseInsensitive": true
+          }
+        }
+      ],
+      "import/no-absolute-path": 2,
+      "import/no-useless-path-segments": 2,
+      "import/newline-after-import": 2,
+      "no-shadow": "off", // replaced by ts-eslint rule below
+      "@typescript-eslint/no-shadow": "error"
+    }
+  }
