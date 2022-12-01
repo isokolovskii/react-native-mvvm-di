@@ -17,7 +17,7 @@ const CURRENCIES_MODULE = {
 
 const currenciesModule = new ContainerModule((bind) => {
   bind<CurrenciesApiClient>(currenciesApiClient).to(CurrenciesApi).inRequestScope()
-  bind<CurrenciesDataSource>(currenciesDataSource).to(CurrencyDataSource).inRequestScope()
+  bind<CurrenciesDataSource>(currenciesDataSource).to(CurrencyDataSource).inSingletonScope()
   bind<CurrenciesViewModel>(currenciesViewModel).to(CurrenciesViewModelImpl).inRequestScope()
 })
 

@@ -1,14 +1,14 @@
+import { useInjection } from 'inversify-react'
 import { observer } from 'mobx-react-lite'
-import React, { memo, useCallback, useEffect, useRef } from 'react'
+import React, { memo, useCallback, useEffect } from 'react'
 import { FlatList, ListRenderItem, Pressable, SafeAreaView, StyleSheet, Text, View as RNView } from 'react-native'
 
 import type { Currency } from '~currencies/api'
-import { container } from '~DI'
 
 import { type CurrenciesListItem, CurrenciesViewModel, currenciesViewModel } from './ViewModel'
 
 export const View = observer(() => {
-  const viewModel = useRef(container.get<CurrenciesViewModel>(currenciesViewModel)).current
+  const viewModel = useInjection<CurrenciesViewModel>(currenciesViewModel)
 
   const renderItem: ListRenderItem<CurrenciesListItem> = ({ item }) => (
     <CurrencyItem item={item} onPress={viewModel.handleCurrencyPress} />
