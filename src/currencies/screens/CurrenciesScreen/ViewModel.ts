@@ -2,7 +2,8 @@ import { inject, injectable } from 'inversify'
 import { makeObservable, observable, runInAction } from 'mobx'
 
 import type { Currency } from '~currencies/api'
-import { currenciesDataSource, CurrenciesDataSource } from '~currencies/data'
+import { currenciesDataSource, type CurrenciesDataSource } from '~currencies/data'
+import { type StackNavigationService, NAVIGATION_MODULE, Screens } from '~navigation'
 
 export interface CurrenciesListItem {
   id: Currency
@@ -25,6 +26,7 @@ export interface CurrenciesViewModel {
 @injectable()
 export class ViewModel implements CurrenciesViewModel {
   private dataSource: CurrenciesDataSource
+  private navigationService: StackNavigationService
 
   @observable currencies: CurrenciesList = []
   @observable loading = false
@@ -67,13 +69,17 @@ export class ViewModel implements CurrenciesViewModel {
   }
 
   handleCurrencyPress = (_currency: Currency) => {
-    //
+    this.navigationService.push(Screens.Currencies)
   }
 
   keyExtractor = (currencyItem: CurrenciesListItem) => `item-${currencyItem.id}`
 
-  constructor(@inject(currenciesDataSource) dataSource: CurrenciesDataSource) {
+  constructor(
+    @inject(currenciesDataSource) dataSource: CurrenciesDataSource,
+    @inject(NAVIGATION_MODULE.navigationService) navigationService: StackNavigationService
+  ) {
     this.dataSource = dataSource
+    this.navigationService = navigationService
 
     makeObservable(this)
   }

@@ -1,6 +1,10 @@
 import type { ComponentType } from 'react'
 
+export enum Screens {
+  Currencies = 'CurrenciesScreen',
+}
+
 export interface ScreenConfig {
-  name: string
+  name: Screens
   Screen: ComponentType
 }

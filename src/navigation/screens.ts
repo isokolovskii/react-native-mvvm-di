@@ -1,10 +1,14 @@
 import { CurrenciesScreen } from '~currencies'
 
-import type { ScreenConfig } from './types'
+import { ScreenConfig, Screens } from './types'
+
+export interface MainStackParamList {
+  [Screens.Currencies]: undefined
+}
 
 export const mainStackScreens: ScreenConfig[] = [
   {
-    name: CurrenciesScreen.displayName,
+    name: Screens.Currencies,
     Screen: CurrenciesScreen,
   },
 ]
