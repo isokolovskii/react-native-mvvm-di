@@ -1,6 +1,11 @@
 import { ContainerModule } from 'inversify'
 
-import { type StackNavigationService, navigationService } from './Services'
+import {
+  type StackNavigationService,
+  type TabNavigationService,
+  type DrawerNavigationService,
+  navigationService,
+} from './Services'
 import { NativeNavigationService } from './Services/Service'
 
 export { AppNavigationContainer } from './Container'
@@ -13,7 +18,9 @@ const NAVIGATION_MODULE = {
 }
 
 const navigationModule = new ContainerModule((bind) => {
-  bind<StackNavigationService>(navigationService).to(NativeNavigationService).inSingletonScope()
+  bind<StackNavigationService & DrawerNavigationService & TabNavigationService>(navigationService)
+    .to(NativeNavigationService)
+    .inSingletonScope()
 })
 
 export { navigationModule, NAVIGATION_MODULE, type StackNavigationService }
