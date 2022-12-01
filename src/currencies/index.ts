@@ -5,16 +5,20 @@ import { CurrenciesApi } from './api/Client'
 import { currenciesDataSource, type CurrenciesDataSource } from './data'
 import { CurrencyDataSource } from './data/DataSource'
 import {
-  ViewModel as CurrenciesViewModelImpl,
+  CurrenciesViewModelImpl,
   type CurrenciesViewModel,
   currenciesViewModel,
-} from './screens/CurrenciesScreen/ViewModel'
+  CurrencyRateViewModel,
+  currencyRateViewModel,
+  CurrencyRateViewModelImpl,
+} from './screens'
 
 const currenciesModule = new ContainerModule((bind) => {
   bind<CurrenciesApiClient>(currenciesApiClient).to(CurrenciesApi).inRequestScope()
   bind<CurrenciesDataSource>(currenciesDataSource).to(CurrencyDataSource).inSingletonScope()
   bind<CurrenciesViewModel>(currenciesViewModel).to(CurrenciesViewModelImpl).inRequestScope()
+  bind<CurrencyRateViewModel>(currencyRateViewModel).to(CurrencyRateViewModelImpl).inRequestScope()
 })
 
 export { currenciesModule }
-export { CurrenciesScreen } from './screens'
+export { CurrenciesScreen, CurrencyRateScreen } from './screens'

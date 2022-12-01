@@ -69,7 +69,7 @@ export class ViewModel implements CurrenciesViewModel {
   }
 
   handleCurrencyPress = (_currency: Currency) => {
-    this.navigationService.push(Screens.Currencies)
+    this.navigationService.push(Screens.CurrencyRate)
   }
 
   keyExtractor = (currencyItem: CurrenciesListItem) => `item-${currencyItem.id}`
