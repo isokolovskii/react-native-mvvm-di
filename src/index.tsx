@@ -1,3 +1,5 @@
 import React from 'react'
 
-export const App = () => <></>
+import { CurrenciesScreen } from '~currencies'
+
+export const App = () => <CurrenciesScreen />

@@ -29,13 +29,20 @@
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "typeRoots": [
             "src/@types",
             "node_modules/@types"
         ],
         "types": [
-            "jest"
+            "jest",
+            "reflect-metadata"
         ],
+        "baseUrl": ".",
+        "paths": {
+            "~*": [ "./src/*" ]
+        }
     },
     "exclude": [
         "node_modules",
