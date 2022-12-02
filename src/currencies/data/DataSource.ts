@@ -12,7 +12,7 @@ import {
 import type { CurrenciesDataSource } from './types'
 
 export class CurrenciesDataSourceImpl implements CurrenciesDataSource {
-  private apiClient: CurrenciesApiClient = core.currenciesModule.apiClient
+  private apiClient: CurrenciesApiClient = core.sharedInstance.currenciesModule.apiClient
 
   private formatDate = (date?: Date) => {
     if (!date) {

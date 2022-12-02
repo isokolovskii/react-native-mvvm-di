@@ -1,8 +1,17 @@
-import { type NavigationModule, NavigationModuleImpl } from './module'
-import { NativeNavigationService } from './services'
+import type { ModuleFactory } from '~core'
 
-NavigationModuleImpl.init({ NavigationService: NativeNavigationService })
-const navigationModule = NavigationModuleImpl.sharedInstance
+import type { NavigationModule } from './module'
+
+const moduleFactory: ModuleFactory<NavigationModule> = () => {
+  const { NavigationModuleImpl } = require('./module')
+  const { NativeNavigationService } = require('./services')
+
+  NavigationModuleImpl.init({ NavigationService: NativeNavigationService })
+
+  return NavigationModuleImpl.sharedInstance
+}
+
+export default moduleFactory
 
 export {
   MainStack,
@@ -14,4 +23,4 @@ export {
   Screens,
 } from './containers'
 export { type StackNavigationService, type TabNavigationService, type DrawerNavigationService } from './services'
-export { type NavigationModule, navigationModule }
+export { type NavigationModule }

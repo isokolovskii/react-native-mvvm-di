@@ -1,15 +1,18 @@
-import { CurrenciesApiClientImpl } from './api'
-import { CurrenciesDataSourceImpl } from './data'
-import { CurrenciesModuleImpl, type CurrenciesModule } from './module'
+import type { ModuleFactory } from '~core'
 
-CurrenciesModuleImpl.init({ ApiClient: CurrenciesApiClientImpl, DataSource: CurrenciesDataSourceImpl })
-const currenciesModule = CurrenciesModuleImpl.sharedInstance
+import type { CurrenciesModule } from './module'
 
-export { currenciesModule, type CurrenciesModule }
-export {
-  CurrenciesScreen,
-  CurrencyRateScreen,
-  type CurrencyRateScreenProps,
-  currenciesScreenOptions,
-  currencyRateScreenOptions,
-} from './screens'
+const moduleFactory: ModuleFactory<CurrenciesModule> = () => {
+  const { CurrenciesModuleImpl } = require('./module')
+  const { CurrenciesDataSourceImpl } = require('./data')
+  const { CurrenciesApiClientImpl } = require('./api')
+
+  CurrenciesModuleImpl.init({ ApiClient: CurrenciesApiClientImpl, DataSource: CurrenciesDataSourceImpl })
+
+  return CurrenciesModuleImpl.sharedInstance
+}
+
+export default moduleFactory
+
+export { type CurrenciesModule }
+export * from './screens'

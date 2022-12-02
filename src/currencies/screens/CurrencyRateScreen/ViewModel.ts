@@ -24,7 +24,7 @@ export interface CurrencyRateViewModel {
 }
 
 class ViewModel implements CurrencyRateViewModel {
-  private dataSource: CurrenciesDataSource = core.currenciesModule.dataSource
+  private dataSource: CurrenciesDataSource = core.sharedInstance.currenciesModule.dataSource
   private currency: Currency
 
   rates: CurrencyRates = []

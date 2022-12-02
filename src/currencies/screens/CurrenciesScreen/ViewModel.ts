@@ -27,8 +27,8 @@ export interface CurrenciesViewModel {
 }
 
 export class ViewModel implements CurrenciesViewModel {
-  private dataSource: CurrenciesDataSource = core.currenciesModule.dataSource
-  private navigationService: StackNavigationService = core.navigationModule.navigationService
+  private dataSource: CurrenciesDataSource = core.sharedInstance.currenciesModule.dataSource
+  private navigationService: StackNavigationService = core.sharedInstance.navigationModule.navigationService
 
   currencies: CurrenciesList = []
   loading = false

@@ -7,12 +7,13 @@ import {
   CurrencyRateScreen,
   currencyRateScreenOptions,
   type CurrencyRateScreenProps,
+  type CurrenciesScreenProps,
 } from '~currencies'
 
 import { ScreenConfig, Screens, StackScreenOptions } from './types'
 
 export type MainStackParamList = {
-  [Screens.Currencies]: undefined
+  [Screens.Currencies]: CurrenciesScreenProps
   [Screens.CurrencyRate]: CurrencyRateScreenProps
 }
 

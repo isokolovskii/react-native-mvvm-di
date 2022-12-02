@@ -6,7 +6,7 @@ import type { Currency } from '~currencies/api'
 
 import { type CurrenciesListItem, useViewModel } from './ViewModel'
 
-export const View = observer(() => {
+const View = observer(() => {
   const viewModel = useViewModel()
 
   const renderItem: ListRenderItem<CurrenciesListItem> = ({ item }) => (
@@ -32,6 +32,7 @@ export const View = observer(() => {
 })
 
 View.displayName = 'CurrenciesScreen'
+export default View
 
 interface CurrencyItemProps {
   item: CurrenciesListItem

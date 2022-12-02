@@ -37,19 +37,29 @@ export class CurrenciesModuleImpl implements CurrenciesModule {
     return this._dataSource
   }
 
-  private static _sharedInstance: CurrenciesModuleImpl
+  private static _sharedInstance: CurrenciesModuleImpl | null = null
+  private static initConfig: CurrenciesModuleInit | null = null
 
   static get sharedInstance() {
-    if (!this._sharedInstance) {
+    if (!this.initConfig) {
       throw new Error()
+    }
+
+    if (!this._sharedInstance) {
+      this._sharedInstance = new CurrenciesModuleImpl(this.initConfig)
     }
 
     return this._sharedInstance
   }
 
-  static init(config: CurrenciesModuleInit) {
-    if (!this._sharedInstance) {
-      this._sharedInstance = new CurrenciesModuleImpl(config)
+  static init = (config: CurrenciesModuleInit) => {
+    this.shutdown()
+    this.initConfig = config
+  }
+
+  static shutdown = () => {
+    if (this._sharedInstance) {
+      this._sharedInstance = null
     }
   }
 
