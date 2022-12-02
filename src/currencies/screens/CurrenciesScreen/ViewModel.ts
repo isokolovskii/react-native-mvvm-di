@@ -26,7 +26,7 @@ export interface CurrenciesViewModel {
   refresh: () => Promise<void>
 }
 
-export class ViewModel implements CurrenciesViewModel {
+class ViewModel implements CurrenciesViewModel {
   private dataSource: CurrenciesDataSource = core.sharedInstance.currenciesModule.dataSource
   private navigationService: StackNavigationService = core.sharedInstance.navigationModule.navigationService
 

@@ -1,63 +1,55 @@
 import { observer } from 'mobx-react-lite'
-import React, { memo, useCallback, useEffect } from 'react'
-import { FlatList, ListRenderItem, Pressable, SafeAreaView, StyleSheet, Text, View as RNView } from 'react-native'
+import React, { useEffect } from 'react'
+import { Dimensions, FlatList, ListRenderItem, SafeAreaView, StyleSheet, View } from 'react-native'
 
-import type { Currency } from '~currencies/api'
+import { Loader } from '~shared'
 
-import { type CurrenciesListItem, useViewModel } from './ViewModel'
+import { CurrencyItem, ITEM_HEIGHT } from './components'
+import { type CurrenciesListItem, useViewModel, type CurrenciesViewModel } from './ViewModel'
 
-const View = observer(() => {
+const CurrenciesView = observer(() => {
   const viewModel = useViewModel()
-
-  const renderItem: ListRenderItem<CurrenciesListItem> = ({ item }) => (
-    <CurrencyItem item={item} onPress={viewModel.handleCurrencyPress} />
-  )
 
   useEffect(() => {
     viewModel.fetchCurrencies()
   }, [])
+
+  if (viewModel.loading) {
+    return <Loader />
+  }
 
   return (
     <SafeAreaView>
       <FlatList
         keyExtractor={viewModel.keyExtractor}
         data={viewModel.currencies}
-        renderItem={renderItem}
+        renderItem={renderItem(viewModel)}
         onRefresh={viewModel.refresh}
         refreshing={viewModel.refreshing}
-        ItemSeparatorComponent={() => <RNView style={styles.spacer} />}
+        ItemSeparatorComponent={ItemSeparatorComponent}
+        maxToRenderPerBatch={ITEMS_PER_SCREEN}
+        updateCellsBatchingPeriod={100}
+        initialNumToRender={ITEMS_PER_SCREEN * 1.5}
+        windowSize={11}
+        getItemLayout={getItemLayout}
       />
     </SafeAreaView>
   )
 })
 
-View.displayName = 'CurrenciesScreen'
-export default View
+const { height } = Dimensions.get('screen')
+const ITEMS_PER_SCREEN = Math.ceil(height / ITEM_HEIGHT)
 
-interface CurrencyItemProps {
-  item: CurrenciesListItem
-  onPress: (id: Currency, name: string) => void
-}
+const renderItem =
+  (viewModel: CurrenciesViewModel): ListRenderItem<CurrenciesListItem> =>
+  ({ item }) =>
+    <CurrencyItem item={item} onPress={viewModel.handleCurrencyPress} />
 
-const CurrencyItem = memo<CurrencyItemProps>(({ onPress, item: { id, name } }) => {
-  const handlePress = useCallback(() => onPress(id, name), [id, onPress, name])
+const getItemLayout = (_: unknown, index: number) => ({ length: ITEM_HEIGHT, offset: index * ITEM_HEIGHT, index })
 
-  return (
-    <Pressable onPress={handlePress} style={styles.item}>
-      <Text>{name}</Text>
-      <Text>{id.toUpperCase()}</Text>
-    </Pressable>
-  )
-})
+const ItemSeparatorComponent = () => <View style={styles.spacer} />
 
 const styles = StyleSheet.create({
-  item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-
   spacer: {
     height: StyleSheet.hairlineWidth,
     width: '100%',
@@ -65,3 +57,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 })
+
+CurrenciesView.displayName = 'CurrenciesView'
+export default CurrenciesView

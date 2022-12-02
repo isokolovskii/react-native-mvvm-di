@@ -1,9 +1,11 @@
 import { observer } from 'mobx-react-lite'
-import React, { memo, useEffect } from 'react'
-import { FlatList, ListRenderItem, StyleSheet, Text, View as RNView } from 'react-native'
+import React, { useEffect } from 'react'
+import { Dimensions, FlatList, ListRenderItem, StyleSheet, View } from 'react-native'
 
 import type { Currency } from '~currencies/api'
+import { Loader } from '~shared'
 
+import { CurrencyRateItem, ITEM_HEIGHT } from './components'
 import { type CurrencyRateListItem, useViewModel } from './ViewModel'
 
 export interface ViewProps {
@@ -11,53 +13,47 @@ export interface ViewProps {
   fetchCurrencyName: (currency: Currency) => string
 }
 
-const View = observer<ViewProps>(({ currency, fetchCurrencyName }) => {
+const CurrencyRateView = observer<ViewProps>(({ currency, fetchCurrencyName }) => {
   const viewModel = useViewModel(currency)
-
-  const renderItem: ListRenderItem<CurrencyRateListItem> = ({ item }) => (
-    <CurrencyRateItem item={item} fetchCurrencyName={fetchCurrencyName} />
-  )
 
   useEffect(() => {
     viewModel.fetchRates()
   }, [])
 
+  if (viewModel.loading) {
+    return <Loader />
+  }
+
   return (
     <FlatList
       keyExtractor={viewModel.keyExtractor}
       data={viewModel.rates}
-      renderItem={renderItem}
+      renderItem={renderItem(fetchCurrencyName)}
       refreshing={viewModel.refreshing}
       onRefresh={viewModel.refresh}
-      ItemSeparatorComponent={() => <RNView style={styles.spacer} />}
+      ItemSeparatorComponent={ItemSeparatorComponent}
+      maxToRenderPerBatch={ITEMS_PER_SCREEN}
+      updateCellsBatchingPeriod={100}
+      initialNumToRender={ITEMS_PER_SCREEN * 1.5}
+      windowSize={11}
+      getItemLayout={getItemLayout}
     />
   )
 })
 
-View.displayName = 'CurrencyRateView'
-export default View
-interface CurrencyRateItemProps {
-  item: CurrencyRateListItem
-  fetchCurrencyName: (currency: Currency) => string
-}
+const { height } = Dimensions.get('screen')
+const ITEMS_PER_SCREEN = Math.ceil(height / ITEM_HEIGHT)
 
-const CurrencyRateItem = memo<CurrencyRateItemProps>(({ item: { id, rate }, fetchCurrencyName }) => (
-  <RNView style={styles.item}>
-    <Text>
-      {'->'} {fetchCurrencyName(id)} ({id.toUpperCase()})
-    </Text>
-    <Text>{rate.toFixed(2)}</Text>
-  </RNView>
-))
+const renderItem =
+  (fetchCurrencyName: (currency: Currency) => string): ListRenderItem<CurrencyRateListItem> =>
+  ({ item }) =>
+    <CurrencyRateItem item={item} fetchCurrencyName={fetchCurrencyName} />
+
+const getItemLayout = (_: unknown, index: number) => ({ length: ITEM_HEIGHT, offset: index * ITEM_HEIGHT, index })
+
+const ItemSeparatorComponent = () => <View style={styles.spacer} />
 
 const styles = StyleSheet.create({
-  item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-
   spacer: {
     height: StyleSheet.hairlineWidth,
     width: '100%',
@@ -65,3 +61,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 })
+
+CurrencyRateView.displayName = 'CurrencyRateView'
+export default CurrencyRateView

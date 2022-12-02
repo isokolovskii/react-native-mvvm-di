@@ -3,13 +3,14 @@ import React, { type FC } from 'react'
 
 import type { Currency } from '~currencies/api'
 import type { MainStackParamList, MainStackScreenConfig, Screens } from '~navigation'
+import { Loader } from '~shared'
 
 const View = React.lazy(() => import('./View'))
 
 export const CurrencyRateScreen: FC<NativeStackScreenProps<MainStackParamList, Screens.CurrencyRate>> = ({
   route: { params },
 }) => (
-  <React.Suspense>
+  <React.Suspense fallback={<Loader />}>
     <View {...params} />
   </React.Suspense>
 )
@@ -21,5 +22,5 @@ export interface CurrencyRateScreenProps {
 }
 
 export const currencyRateScreenOptions: MainStackScreenConfig['options'] = ({ route: { params } }) => ({
-  title: params?.title,
+  title: `${params?.title} (${params?.currency?.toUpperCase()})`,
 })
