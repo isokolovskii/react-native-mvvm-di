@@ -1,12 +1,9 @@
 import { StackActions, DrawerActions, TabActions } from '@react-navigation/native'
-import { injectable } from 'inversify'
 
-import { navigation } from '../Container'
-import type { Screens } from '../types'
+import { navigation, type Screens } from '../containers'
 
 import type { DrawerNavigationService, StackNavigationService, TabNavigationService } from './types'
 
-@injectable()
 export class NativeNavigationService implements StackNavigationService, DrawerNavigationService, TabNavigationService {
   private get navigation() {
     if (navigation.isReady()) {
@@ -16,8 +13,8 @@ export class NativeNavigationService implements StackNavigationService, DrawerNa
     }
   }
 
-  push = (screen: Screens) => {
-    this.navigation.dispatch(StackActions.push(screen))
+  push = <ScreenProps extends object | undefined = undefined>(screen: Screens, props?: ScreenProps) => {
+    this.navigation.dispatch(StackActions.push(screen, props))
   }
 
   pop = () => {
@@ -28,16 +25,16 @@ export class NativeNavigationService implements StackNavigationService, DrawerNa
     this.navigation.dispatch(StackActions.popToTop())
   }
 
-  replace = (screen: Screens) => {
-    this.navigation.dispatch(StackActions.replace(screen))
+  replace = <ScreenProps extends object | undefined = undefined>(screen: Screens, props?: ScreenProps) => {
+    this.navigation.dispatch(StackActions.replace(screen, props))
   }
 
-  jumpToTab = (screen: Screens) => {
-    this.navigation.dispatch(TabActions.jumpTo(screen))
+  jumpToTab = <ScreenProps extends object | undefined = undefined>(screen: Screens, props?: ScreenProps) => {
+    this.navigation.dispatch(TabActions.jumpTo(screen, props))
   }
 
-  jumpTo = (screen: Screens) => {
-    this.navigation.dispatch(DrawerActions.jumpTo(screen))
+  jumpTo = <ScreenProps extends object | undefined = undefined>(screen: Screens, props?: ScreenProps) => {
+    this.navigation.dispatch(DrawerActions.jumpTo(screen, props))
   }
 
   toggleDrawer = () => {

@@ -1,4 +1,4 @@
-# React Native - MVVM - DI(IoC) example project
+# React Native - MVVM example project
 
 # Currently WIP!!
 
@@ -6,7 +6,6 @@
 - react-native
 - react-navigation
 - mobx
-- inversify
 
 ## API
 Uses [Currency API](https://github.com/fawazahmed0/currency-api) for example purpose
@@ -17,3 +16,6 @@ Uses [Currency API](https://github.com/fawazahmed0/currency-api) for example pur
 ## Architecture
 *TODO*
 
+### Historical decisions
+- Ditched reflect metadata and decorator based IoC due to unexpected behavior and random bundling bugs
+- Use global module managers for direct class props injection

@@ -1,14 +1,13 @@
-import { useInjection } from 'inversify-react'
 import { observer } from 'mobx-react-lite'
 import React, { memo, useCallback, useEffect } from 'react'
 import { FlatList, ListRenderItem, Pressable, SafeAreaView, StyleSheet, Text, View as RNView } from 'react-native'
 
 import type { Currency } from '~currencies/api'
 
-import { type CurrenciesListItem, CurrenciesViewModel, currenciesViewModel } from './ViewModel'
+import { type CurrenciesListItem, useViewModel } from './ViewModel'
 
 export const View = observer(() => {
-  const viewModel = useInjection<CurrenciesViewModel>(currenciesViewModel)
+  const viewModel = useViewModel()
 
   const renderItem: ListRenderItem<CurrenciesListItem> = ({ item }) => (
     <CurrencyItem item={item} onPress={viewModel.handleCurrencyPress} />
@@ -36,11 +35,11 @@ View.displayName = 'CurrenciesScreen'
 
 interface CurrencyItemProps {
   item: CurrenciesListItem
-  onPress: (id: Currency) => void
+  onPress: (id: Currency, name: string) => void
 }
 
 const CurrencyItem = memo<CurrencyItemProps>(({ onPress, item: { id, name } }) => {
-  const handlePress = useCallback(() => onPress(id), [id, onPress])
+  const handlePress = useCallback(() => onPress(id, name), [id, onPress, name])
 
   return (
     <Pressable onPress={handlePress} style={styles.item}>

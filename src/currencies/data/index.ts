@@ -1,4 +1,2 @@
-import { CurrencyDataSource } from './DataSource'
-
-export const currenciesDataSource = Symbol.for(CurrencyDataSource.name)
+export { CurrenciesDataSourceImpl } from './DataSource'
 export { type CurrenciesDataSource } from './types'

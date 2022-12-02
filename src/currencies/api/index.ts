@@ -1,6 +1,3 @@
-import { CurrenciesApi } from './Client'
-
-export const currenciesApiClient = Symbol.for(CurrenciesApi.name)
 export {
   type Currency,
   type CurrencyList,
@@ -10,3 +7,4 @@ export {
   type CurrenciesApiClient,
   CurrenciesEndpoints,
 } from './types'
+export { CurrenciesApiClientImpl } from './Client'

@@ -1,8 +1,9 @@
-import { inject, injectable } from 'inversify'
-import { action, makeObservable, observable, runInAction } from 'mobx'
+import { makeObservable, observable, runInAction } from 'mobx'
+import { useRef } from 'react'
 
+import { core } from '~core'
 import type { Currency } from '~currencies/api'
-import { currenciesDataSource, CurrenciesDataSource } from '~currencies/data'
+import type { CurrenciesDataSource } from '~currencies/data'
 
 export interface CurrencyRateListItem {
   id: Currency
@@ -20,25 +21,17 @@ export interface CurrencyRateViewModel {
   fetchRates: () => Promise<void>
   keyExtractor: (currencyRateItem: CurrencyRateListItem) => string
   refresh: () => Promise<void>
-  setCurrency: (currency: Currency) => void
 }
 
-@injectable()
-export class ViewModel implements CurrencyRateViewModel {
-  private dataSource: CurrenciesDataSource
-  private currency: Currency | null = null
+class ViewModel implements CurrencyRateViewModel {
+  private dataSource: CurrenciesDataSource = core.currenciesModule.dataSource
+  private currency: Currency
 
-  @observable rates: CurrencyRates = []
-  @observable date: string = ''
-  @observable loading = false
-  @observable error = false
-  @observable refreshing = false
-
-  @action
-  setCurrency = (currency: string) => {
-    this.currency = currency
-    this.fetchRates()
-  }
+  rates: CurrencyRates = []
+  date: string = ''
+  loading = false
+  error = false
+  refreshing = false
 
   fetchRates = async () => {
     if (this.currency === null) {
@@ -93,11 +86,21 @@ export class ViewModel implements CurrencyRateViewModel {
 
   keyExtractor = (currencyRateItem: CurrencyRateListItem) => `item=${currencyRateItem.id}`
 
-  constructor(@inject(currenciesDataSource) dataSource: CurrenciesDataSource) {
-    this.dataSource = dataSource
+  constructor(currency: Currency) {
+    this.currency = currency
 
-    makeObservable(this)
+    makeObservable(this, {
+      rates: observable,
+      date: observable,
+      loading: observable,
+      error: observable,
+      refreshing: observable,
+    })
   }
 }
 
-export const currencyRateViewModel = Symbol.for('CurrencyRateViewModel')
+export function useViewModel(currency: Currency) {
+  const viewModel = useRef(new ViewModel(currency))
+
+  return viewModel.current
+}

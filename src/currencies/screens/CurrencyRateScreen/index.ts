@@ -1,2 +1,7 @@
-export { View as CurrencyRateScreen } from './View'
-export { ViewModel as CurrencyRateViewModelImpl, type CurrencyRateViewModel, currencyRateViewModel } from './ViewModel'
+import type { MainStackScreenConfig } from '~navigation'
+
+export const currencyRateScreenOptions: MainStackScreenConfig['options'] = ({ route: { params } }) => ({
+  title: params?.title,
+})
+
+export { View as CurrencyRateScreen, type ViewProps as CurrencyRateScreenProps } from './View'

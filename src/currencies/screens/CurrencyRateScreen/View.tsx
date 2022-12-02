@@ -1,41 +1,59 @@
-import { useInjection } from 'inversify-react'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { observer } from 'mobx-react-lite'
 import React, { memo, useEffect } from 'react'
 import { FlatList, ListRenderItem, StyleSheet, Text, View as RNView } from 'react-native'
 
-import { CurrencyRateListItem, currencyRateViewModel, CurrencyRateViewModel } from './ViewModel'
+import type { Currency } from '~currencies/api'
+import type { MainStackParamList, Screens } from '~navigation'
 
-export const View = observer(() => {
-  const viewModel = useInjection<CurrencyRateViewModel>(currencyRateViewModel)
+import { type CurrencyRateListItem, useViewModel } from './ViewModel'
 
-  const renderItem: ListRenderItem<CurrencyRateListItem> = ({ item }) => <CurrencyRateItem item={item} />
+export interface ViewProps {
+  currency: Currency
+  title: string
+  fetchCurrencyName: (currency: Currency) => string
+}
 
-  useEffect(() => {
-    viewModel.setCurrency('eur')
-  }, [])
+export const View = observer<NativeStackScreenProps<MainStackParamList, Screens.CurrencyRate>>(
+  ({
+    route: {
+      params: { currency, fetchCurrencyName },
+    },
+  }) => {
+    const viewModel = useViewModel(currency)
 
-  return (
-    <FlatList
-      keyExtractor={viewModel.keyExtractor}
-      data={viewModel.rates}
-      renderItem={renderItem}
-      refreshing={viewModel.refreshing}
-      onRefresh={viewModel.refresh}
-      ItemSeparatorComponent={() => <RNView style={styles.spacer} />}
-    />
-  )
-})
+    const renderItem: ListRenderItem<CurrencyRateListItem> = ({ item }) => (
+      <CurrencyRateItem item={item} fetchCurrencyName={fetchCurrencyName} />
+    )
+
+    useEffect(() => {
+      viewModel.fetchRates()
+    }, [])
+
+    return (
+      <FlatList
+        keyExtractor={viewModel.keyExtractor}
+        data={viewModel.rates}
+        renderItem={renderItem}
+        refreshing={viewModel.refreshing}
+        onRefresh={viewModel.refresh}
+        ItemSeparatorComponent={() => <RNView style={styles.spacer} />}
+      />
+    )
+  }
+)
 
 View.displayName = 'CurrencyRateScreen'
 
 interface CurrencyRateItemProps {
   item: CurrencyRateListItem
+  fetchCurrencyName: (currency: Currency) => string
 }
 
-const CurrencyRateItem = memo<CurrencyRateItemProps>(({ item: { id, rate } }) => (
+const CurrencyRateItem = memo<CurrencyRateItemProps>(({ item: { id, rate }, fetchCurrencyName }) => (
   <RNView style={styles.item}>
     <Text>
-      {'->'} {id}
+      {'->'} {fetchCurrencyName(id)} ({id.toUpperCase()})
     </Text>
     <Text>{rate.toFixed(2)}</Text>
   </RNView>

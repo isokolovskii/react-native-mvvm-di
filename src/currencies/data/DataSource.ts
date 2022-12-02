@@ -1,7 +1,5 @@
-import { inject, injectable } from 'inversify'
-
+import { core } from '~core'
 import {
-  currenciesApiClient,
   CurrenciesEndpoints,
   type CurrenciesApiClient,
   type CurrencyList,
@@ -13,9 +11,8 @@ import {
 
 import type { CurrenciesDataSource } from './types'
 
-@injectable()
-export class CurrencyDataSource implements CurrenciesDataSource {
-  private apiClient: CurrenciesApiClient
+export class CurrenciesDataSourceImpl implements CurrenciesDataSource {
+  private apiClient: CurrenciesApiClient = core.currenciesModule.apiClient
 
   private formatDate = (date?: Date) => {
     if (!date) {
@@ -40,8 +37,4 @@ export class CurrencyDataSource implements CurrenciesDataSource {
       `/${from}/${to}`,
       this.formatDate(date)
     )
-
-  constructor(@inject(currenciesApiClient) apiClient: CurrenciesApiClient) {
-    this.apiClient = apiClient
-  }
 }

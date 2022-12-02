@@ -1,7 +1,7 @@
 import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native'
 import React, { FC, type ReactNode } from 'react'
 
-import type { MainStackParamList } from './screens'
+import type { MainStackParamList } from './MainStack'
 
 interface NavigationContainerProps {
   children: ReactNode

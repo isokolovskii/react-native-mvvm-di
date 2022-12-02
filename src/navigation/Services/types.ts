@@ -1,18 +1,18 @@
-import type { Screens } from '~navigation/types'
+import type { Screens } from '~navigation/containers/types'
 
 export interface StackNavigationService {
-  push: (screen: Screens) => void
+  push: <T extends object | undefined>(screen: Screens, props?: T) => void
   pop: () => void
   popToRoot: () => void
-  replace: (screen: Screens) => void
+  replace: <T extends object | undefined>(screen: Screens, props?: T) => void
 }
 
 export interface TabNavigationService {
-  jumpToTab: (screen: Screens) => void
+  jumpToTab: <T extends object | undefined>(screen: Screens, props?: T) => void
 }
 
 export interface DrawerNavigationService {
-  jumpTo: (screen: Screens) => void
+  jumpTo: <T extends object | undefined>(screen: Screens, props?: T) => void
   toggleDrawer: () => void
   openDrawer: () => void
   closeDrawer: () => void

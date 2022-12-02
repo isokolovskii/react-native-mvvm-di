@@ -1,9 +1,12 @@
-import { inject, injectable } from 'inversify'
 import { makeObservable, observable, runInAction } from 'mobx'
+import { useRef } from 'react'
 
+import { core } from '~core'
 import type { Currency } from '~currencies/api'
-import { currenciesDataSource, type CurrenciesDataSource } from '~currencies/data'
-import { type StackNavigationService, NAVIGATION_MODULE, Screens } from '~navigation'
+import type { CurrenciesDataSource } from '~currencies/data'
+import { type StackNavigationService, Screens } from '~navigation'
+
+import type { CurrencyRateScreenProps } from '../CurrencyRateScreen'
 
 export interface CurrenciesListItem {
   id: Currency
@@ -18,20 +21,19 @@ export interface CurrenciesViewModel {
   error: boolean
   refreshing: boolean
   fetchCurrencies: () => Promise<void>
-  handleCurrencyPress: (currency: Currency) => void
+  handleCurrencyPress: (currency: Currency, currencyName: string) => void
   keyExtractor: (currencyItem: CurrenciesListItem) => string
   refresh: () => Promise<void>
 }
 
-@injectable()
 export class ViewModel implements CurrenciesViewModel {
-  private dataSource: CurrenciesDataSource
-  private navigationService: StackNavigationService
+  private dataSource: CurrenciesDataSource = core.currenciesModule.dataSource
+  private navigationService: StackNavigationService = core.navigationModule.navigationService
 
-  @observable currencies: CurrenciesList = []
-  @observable loading = false
-  @observable error = false
-  @observable refreshing = false
+  currencies: CurrenciesList = []
+  loading = false
+  error = false
+  refreshing = false
 
   fetchCurrencies = async () => {
     runInAction(() => {
@@ -68,21 +70,30 @@ export class ViewModel implements CurrenciesViewModel {
     })
   }
 
-  handleCurrencyPress = (_currency: Currency) => {
-    this.navigationService.push(Screens.CurrencyRate)
+  getCurrencyName = (currency: Currency) => this.currencies.find(({ id }) => id === currency)?.name ?? currency
+
+  handleCurrencyPress = (currency: Currency, title: string) => {
+    this.navigationService.push<CurrencyRateScreenProps>(Screens.CurrencyRate, {
+      currency,
+      title,
+      fetchCurrencyName: this.getCurrencyName,
+    })
   }
 
   keyExtractor = (currencyItem: CurrenciesListItem) => `item-${currencyItem.id}`
 
-  constructor(
-    @inject(currenciesDataSource) dataSource: CurrenciesDataSource,
-    @inject(NAVIGATION_MODULE.navigationService) navigationService: StackNavigationService
-  ) {
-    this.dataSource = dataSource
-    this.navigationService = navigationService
-
-    makeObservable(this)
+  constructor() {
+    makeObservable(this, {
+      currencies: observable,
+      loading: observable,
+      error: observable,
+      refreshing: observable,
+    })
   }
 }
 
-export const currenciesViewModel = Symbol.for('CurrenciesViewModel')
+export function useViewModel() {
+  const viewModel = useRef(new ViewModel())
+
+  return viewModel.current
+}

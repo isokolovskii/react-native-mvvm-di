@@ -12,22 +12,18 @@
     "prepare": "lefthook install"
   },
   "dependencies": {
-    "@react-navigation/native": "^6.0.16",
-    "@react-navigation/native-stack": "^6.9.4",
+    "@react-navigation/native": "6.0.16",
+    "@react-navigation/native-stack": "6.9.4",
     "axios": "1.2.0",
-    "inversify": "6.0.1",
-    "inversify-react": "^1.0.2",
     "mobx": "6.7.0",
     "mobx-react-lite": "3.4.0",
     "react": "18.1.0",
     "react-native": "0.70.6",
-    "react-native-safe-area-context": "^4.4.1",
-    "react-native-screens": "^3.18.2",
-    "reflect-metadata": "0.1.13"
+    "react-native-safe-area-context": "4.4.1",
+    "react-native-screens": "3.18.2"
   },
   "devDependencies": {
     "@babel/core": "7.12.9",
-    "@babel/plugin-proposal-decorators": "7.20.5",
     "@babel/runtime": "7.12.5",
     "@react-native-community/eslint-config": "3.2.0",
     "@types/react": "18.0.25",
@@ -37,7 +33,6 @@
     "@typescript-eslint/parser": "5.45.0",
     "babel-jest": "26.6.3",
     "babel-plugin-module-resolver": "4.1.0",
-    "babel-plugin-parameter-decorator": "1.0.16",
     "eslint": "8.28.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-prettier": "4.2.1",

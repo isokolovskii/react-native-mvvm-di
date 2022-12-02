@@ -1,10 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios'
-import { injectable } from 'inversify'
 
 import { type CurrenciesApiClient, CurrenciesEndpoints } from './types'
 
-@injectable()
-export class CurrenciesApi implements CurrenciesApiClient {
+export class CurrenciesApiClientImpl implements CurrenciesApiClient {
   private readonly BASE_URL = `https://cdn.jsdelivr.net/gh/fawazahmed0`
   private readonly API_VERSION = 1
   private readonly ENDPOINTS: Record<CurrenciesEndpoints, string> = {

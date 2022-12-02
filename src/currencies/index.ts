@@ -1,24 +1,15 @@
-import { ContainerModule } from 'inversify'
+import { CurrenciesApiClientImpl } from './api'
+import { CurrenciesDataSourceImpl } from './data'
+import { CurrenciesModuleImpl, type CurrenciesModule } from './module'
 
-import { currenciesApiClient, type CurrenciesApiClient } from './api'
-import { CurrenciesApi } from './api/Client'
-import { currenciesDataSource, type CurrenciesDataSource } from './data'
-import { CurrencyDataSource } from './data/DataSource'
-import {
-  CurrenciesViewModelImpl,
-  type CurrenciesViewModel,
-  currenciesViewModel,
-  CurrencyRateViewModel,
-  currencyRateViewModel,
-  CurrencyRateViewModelImpl,
+CurrenciesModuleImpl.init({ ApiClient: CurrenciesApiClientImpl, DataSource: CurrenciesDataSourceImpl })
+const currenciesModule = CurrenciesModuleImpl.sharedInstance
+
+export { currenciesModule, type CurrenciesModule }
+export {
+  CurrenciesScreen,
+  CurrencyRateScreen,
+  type CurrencyRateScreenProps,
+  currenciesScreenOptions,
+  currencyRateScreenOptions,
 } from './screens'
-
-const currenciesModule = new ContainerModule((bind) => {
-  bind<CurrenciesApiClient>(currenciesApiClient).to(CurrenciesApi).inRequestScope()
-  bind<CurrenciesDataSource>(currenciesDataSource).to(CurrencyDataSource).inSingletonScope()
-  bind<CurrenciesViewModel>(currenciesViewModel).to(CurrenciesViewModelImpl).inRequestScope()
-  bind<CurrencyRateViewModel>(currencyRateViewModel).to(CurrencyRateViewModelImpl).inRequestScope()
-})
-
-export { currenciesModule }
-export { CurrenciesScreen, CurrencyRateScreen } from './screens'
