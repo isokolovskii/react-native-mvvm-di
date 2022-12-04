@@ -7,7 +7,7 @@ const moduleFactory: ModuleFactory<CurrenciesModule> = () => {
   const { CurrenciesDataSourceImpl } = require('./data')
   const { CurrenciesApiClientImpl } = require('./api')
 
-  CurrenciesModuleImpl.init({ ApiClient: CurrenciesApiClientImpl, DataSource: CurrenciesDataSourceImpl })
+  CurrenciesModuleImpl.sharedInstance.init({ ApiClient: CurrenciesApiClientImpl, DataSource: CurrenciesDataSourceImpl })
 
   return CurrenciesModuleImpl.sharedInstance
 }

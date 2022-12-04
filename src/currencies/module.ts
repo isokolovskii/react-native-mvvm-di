@@ -1,11 +1,6 @@
 import type { CurrenciesApiClient } from './api'
 import type { CurrenciesDataSource } from './data'
 
-export interface CurrenciesModule {
-  apiClient: CurrenciesApiClient
-  dataSource: CurrenciesDataSource
-}
-
 interface CurrenciesModuleInit {
   ApiClient: {
     new (): CurrenciesModule['apiClient']
@@ -15,11 +10,15 @@ interface CurrenciesModuleInit {
   }
 }
 
+export interface CurrenciesModule {
+  apiClient: CurrenciesApiClient
+  dataSource: CurrenciesDataSource
+  init: (config: CurrenciesModuleInit) => void
+}
+
 export class CurrenciesModuleImpl implements CurrenciesModule {
-  private ApiClient: CurrenciesModuleInit['ApiClient']
+  private ApiClient!: CurrenciesModuleInit['ApiClient']
   private _apiClient: CurrenciesApiClient | null = null
-  private DataSource: CurrenciesModuleInit['DataSource']
-  private _dataSource: CurrenciesDataSource | null = null
 
   get apiClient() {
     if (!this._apiClient) {
@@ -29,6 +28,9 @@ export class CurrenciesModuleImpl implements CurrenciesModule {
     return this._apiClient
   }
 
+  private DataSource!: CurrenciesModuleInit['DataSource']
+  private _dataSource: CurrenciesDataSource | null = null
+
   get dataSource() {
     if (!this._dataSource) {
       this._dataSource = new this.DataSource()
@@ -37,34 +39,21 @@ export class CurrenciesModuleImpl implements CurrenciesModule {
     return this._dataSource
   }
 
+  init = ({ ApiClient, DataSource }: CurrenciesModuleInit) => {
+    this._apiClient = null
+    this.ApiClient = ApiClient
+
+    this._dataSource = null
+    this.DataSource = DataSource
+  }
+
   private static _sharedInstance: CurrenciesModuleImpl | null = null
-  private static initConfig: CurrenciesModuleInit | null = null
 
   static get sharedInstance() {
-    if (!this.initConfig) {
-      throw new Error()
+    if (!CurrenciesModuleImpl._sharedInstance) {
+      CurrenciesModuleImpl._sharedInstance = new CurrenciesModuleImpl()
     }
 
-    if (!this._sharedInstance) {
-      this._sharedInstance = new CurrenciesModuleImpl(this.initConfig)
-    }
-
-    return this._sharedInstance
-  }
-
-  static init = (config: CurrenciesModuleInit) => {
-    this.shutdown()
-    this.initConfig = config
-  }
-
-  static shutdown = () => {
-    if (this._sharedInstance) {
-      this._sharedInstance = null
-    }
-  }
-
-  private constructor({ ApiClient, DataSource }: CurrenciesModuleInit) {
-    this.ApiClient = ApiClient
-    this.DataSource = DataSource
+    return CurrenciesModuleImpl._sharedInstance
   }
 }

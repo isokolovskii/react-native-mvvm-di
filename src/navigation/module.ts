@@ -1,17 +1,17 @@
 import type { DrawerNavigationService, StackNavigationService, TabNavigationService } from './services'
 
-export interface NavigationModule {
-  navigationService: StackNavigationService & DrawerNavigationService & TabNavigationService
-}
-
 interface NavigationModuleInit {
   NavigationService: {
     new (): NavigationModule['navigationService']
   }
 }
+export interface NavigationModule {
+  navigationService: StackNavigationService & DrawerNavigationService & TabNavigationService
+  init: (config: NavigationModuleInit) => void
+}
 
 export class NavigationModuleImpl implements NavigationModule {
-  private NavigationService: NavigationModuleInit['NavigationService']
+  private NavigationService!: NavigationModuleInit['NavigationService']
   private _navigationService: (StackNavigationService & DrawerNavigationService & TabNavigationService) | null = null
 
   get navigationService() {
@@ -22,33 +22,18 @@ export class NavigationModuleImpl implements NavigationModule {
     return this._navigationService
   }
 
+  init = ({ NavigationService }: NavigationModuleInit) => {
+    this._navigationService = null
+    this.NavigationService = NavigationService
+  }
+
   private static _sharedInstance: NavigationModule | null = null
-  private static initConfig: NavigationModuleInit | null = null
 
   static get sharedInstance() {
-    if (!this.initConfig) {
-      throw new Error()
+    if (!NavigationModuleImpl._sharedInstance) {
+      NavigationModuleImpl._sharedInstance = new NavigationModuleImpl()
     }
 
-    if (!this._sharedInstance) {
-      this._sharedInstance = new NavigationModuleImpl(this.initConfig)
-    }
-
-    return this._sharedInstance
-  }
-
-  static init = (config: NavigationModuleInit) => {
-    this.shutdown()
-    this.initConfig = config
-  }
-
-  static shutdown = () => {
-    if (this._sharedInstance) {
-      this._sharedInstance = null
-    }
-  }
-
-  private constructor({ NavigationService }: NavigationModuleInit) {
-    this.NavigationService = NavigationService
+    return NavigationModuleImpl._sharedInstance
   }
 }

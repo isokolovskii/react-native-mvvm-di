@@ -3,18 +3,18 @@ import type { NavigationModule } from '~navigation'
 
 import type { ModuleFactory } from './types'
 
-export interface Core {
-  navigationModule: NavigationModule
-  currenciesModule: CurrenciesModule
-}
-
 interface CoreInit {
   navigationModuleFactory: ModuleFactory<NavigationModule>
   currenciesModuleFactory: ModuleFactory<CurrenciesModule>
 }
+export interface Core {
+  navigationModule: NavigationModule
+  currenciesModule: CurrenciesModule
+  init: (config: CoreInit) => void
+}
 
 export class CoreImpl implements Core {
-  private navigationModuleFactory: CoreInit['navigationModuleFactory']
+  private navigationModuleFactory!: CoreInit['navigationModuleFactory']
   private _navigationModule: NavigationModule | null = null
 
   get navigationModule() {
@@ -25,7 +25,7 @@ export class CoreImpl implements Core {
     return this._navigationModule
   }
 
-  private currenciesModuleFactory: CoreInit['currenciesModuleFactory']
+  private currenciesModuleFactory!: CoreInit['currenciesModuleFactory']
   private _currenciesModule: CurrenciesModule | null = null
 
   get currenciesModule() {
@@ -36,33 +36,20 @@ export class CoreImpl implements Core {
     return this._currenciesModule
   }
 
+  init = ({ navigationModuleFactory, currenciesModuleFactory }: CoreInit) => {
+    this._navigationModule = null
+    this.navigationModuleFactory = navigationModuleFactory
+
+    this._currenciesModule = null
+    this.currenciesModuleFactory = currenciesModuleFactory
+  }
+
   private static _sharedInstance: Core | null = null
-  private static initConfig: CoreInit | null = null
 
   static get sharedInstance() {
-    if (!this.initConfig) {
-      throw new Error()
+    if (!CoreImpl._sharedInstance) {
+      CoreImpl._sharedInstance = new CoreImpl()
     }
-
-    if (!this._sharedInstance) {
-      this._sharedInstance = new CoreImpl(this.initConfig)
-    }
-    return this._sharedInstance
-  }
-
-  static init = (config: CoreInit) => {
-    this.shutdown()
-    this.initConfig = config
-  }
-
-  static shutdown = () => {
-    if (this._sharedInstance) {
-      this._sharedInstance = null
-    }
-  }
-
-  private constructor({ navigationModuleFactory, currenciesModuleFactory }: CoreInit) {
-    this.navigationModuleFactory = navigationModuleFactory
-    this.currenciesModuleFactory = currenciesModuleFactory
+    return CoreImpl._sharedInstance
   }
 }

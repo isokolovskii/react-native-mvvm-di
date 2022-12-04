@@ -6,7 +6,7 @@ const moduleFactory: ModuleFactory<NavigationModule> = () => {
   const { NavigationModuleImpl } = require('./module')
   const { NativeNavigationService } = require('./services')
 
-  NavigationModuleImpl.init({ NavigationService: NativeNavigationService })
+  NavigationModuleImpl.sharedInstance.init({ NavigationService: NativeNavigationService })
 
   return NavigationModuleImpl.sharedInstance
 }
