@@ -1,7 +1,5 @@
 # React Native - MVVM example project
 
-# Currently WIP!!
-
 ## Purpose of this project
 It is an example React Native application which shows how to create a modularized application with MVVM pattern, how to work with modules' entities in project, provide them via "improvised" dependency injection and how to structure your modularized app.
 
@@ -62,6 +60,9 @@ Module's init method with exact entities implementations is invoked inside modul
 You can see graphical visualization of application's architecture below.
 
 ![Architecture](images/architecture.jpg)
+
+#### Dependency graph
+![Dependency graph](images/dependencygraph.svg)
 
 ### Historical decisions
 - Ditched reflect metadata and decorator based IoC due to unexpected behavior and random bundling bugs
