@@ -2,7 +2,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { type FC } from 'react'
 
 import type { MainStackParamList, MainStackScreenConfig, Screens } from '~navigation'
-import { Loader } from '~shared'
+import { Loader } from '~shared/components'
 
 const View = React.lazy(() => import('./View'))
 

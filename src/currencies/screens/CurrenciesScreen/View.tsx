@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite'
 import React, { useEffect } from 'react'
 import { Dimensions, FlatList, ListRenderItem, SafeAreaView, StyleSheet, View } from 'react-native'
 
-import { Loader } from '~shared'
+import { Loader } from '~shared/components'
 
 import { CurrencyItem, ITEM_HEIGHT } from './components'
 import { type CurrenciesListItem, useViewModel, type CurrenciesViewModel } from './ViewModel'

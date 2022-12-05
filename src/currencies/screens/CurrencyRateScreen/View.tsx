@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { Dimensions, FlatList, ListRenderItem, StyleSheet, View } from 'react-native'
 
 import type { Currency } from '~currencies/api'
-import { Loader } from '~shared'
+import { Loader } from '~shared/components'
 
 import { CurrencyRateItem, ITEM_HEIGHT } from './components'
 import { type CurrencyRateListItem, useViewModel } from './ViewModel'
